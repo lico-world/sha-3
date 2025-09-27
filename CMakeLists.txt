@@ -19,7 +19,9 @@ enable_testing()
 
 # Test executable
 add_executable(sha3_tests
+    src/hash_utils.cpp
     test/src/main.cpp
+    test/src/bit_management_test.cpp
     # Add other test source files here if needed
 )
 
