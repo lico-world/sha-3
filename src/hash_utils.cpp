@@ -29,22 +29,56 @@ void store64(uint8_t* bytes, uint64_t lane)
 namespace permutations {
 
 void keccakf(uint64_t state[25])
-{}
+{
+    // 64bits -> 12 + 2*log2(64) = 24 rounds
+    for(int i=0 ; i<24 ; i++)
+    {
+        theta(state);
+        rho(state);
+        pi(state);
+        chi(state);
+        iota(state, i);
+    }
+}
 
 void theta(uint64_t state[25])
-{}
+{
+    uint64_t* C = permutations_helpers::parities(state);
+
+    uint64_t D[5];
+    for(int i=0 ; i<5 ; i++)
+    {
+        D[i] = C[(i + 4) % 5] ^ bit_management::rotl64(C[(i + 1) % 5], 1);
+    }
+
+    for(int i=0 ; i<5 ; i++)
+    {
+        for(int j=0 ; j<5 ; j++)
+        {
+            state[j + 5*i] ^= D[j];
+        }
+    }
+}
 
 void rho(uint64_t state[25])
-{}
+{
+
+}
 
 void pi(uint64_t state[25])
-{}
+{
+
+}
 
 void chi(uint64_t state[25])
-{}
+{
+
+}
 
 void iota(uint64_t state[25], unsigned round)
-{}
+{
+
+}
 
 
 } // namespace permutations

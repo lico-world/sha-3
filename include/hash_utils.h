@@ -26,6 +26,26 @@ namespace permutations {
     void chi(uint64_t state[25]);
     void iota(uint64_t state[25], unsigned round);
 
+namespace permutations_helpers {
+
+    inline uint64_t* parities(uint64_t state[25])
+    {
+        static uint64_t parities[5] = {0};
+    
+        for(int i=0 ; i<5 ; i++)
+        {
+            parities[i] = (state[i]      ) ^
+                          (state[i + 5]  ) ^
+                          (state[i + 10] ) ^
+                          (state[i + 15] ) ^
+                          (state[i + 20] );
+        }
+
+        return parities;
+    };
+
+}
+
 } // namespace permutations
 
 namespace sponge {
