@@ -9,7 +9,7 @@ namespace bit_management {
 
     inline uint64_t rotl64(uint64_t x, unsigned n)
     {
-        return 0;
+        return (x << n) | (x >> (64 - n));
     };
     uint64_t load64(const uint8_t* bytes);
     void store64(uint8_t* bytes, uint64_t lane);
