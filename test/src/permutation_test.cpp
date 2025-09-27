@@ -31,7 +31,24 @@ TEST(PermutationTests, rho)
 
     hash::utils::permutations::rho(state);
 
-    EXPECT_EQ(state[0], 0x0000000001A);
-    EXPECT_EQ(state[1], 0x00000000012);
-    EXPECT_EQ(state[8], 0x16000000000);
+    EXPECT_EQ(state[0], 0x000000000000001A);
+    EXPECT_EQ(state[1], 0x0000000000000012);
+    EXPECT_EQ(state[8], 0x0000016000000000);
+}
+
+TEST(PermutationTests, pi)
+{
+    uint64_t state[25] = {0};
+    for(uint64_t i=0 ; i<25 ; i++)
+    {
+        state[i] = i;
+    }
+    hash::utils::permutations::theta(state);
+    hash::utils::permutations::rho(state);
+
+    hash::utils::permutations::pi(state);
+
+    EXPECT_EQ(state[0], 0x000000000000001A);
+    EXPECT_EQ(state[1], 0x0000000001c00000);
+    EXPECT_EQ(state[8], 0x0000000000001800);
 }

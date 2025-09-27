@@ -2,6 +2,7 @@
 #define HASH_UTILS_H
 
 #include <cstdint>
+#include <algorithm>
 
 namespace hash {
 namespace utils {
