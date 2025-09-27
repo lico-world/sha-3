@@ -27,6 +27,16 @@ void store64(uint8_t* bytes, uint64_t lane)
 } // namespace bit_management
 
 namespace permutations {
+namespace permutations_helpers {
+
+const uint64_t rho_offsets[25] = {
+    0, 1, 3, 6, 10,
+    15, 21, 28, 36, 45,
+    55, 2, 14, 27, 41,
+    56, 8, 25, 43, 62,
+    18, 39, 61, 20, 44};
+
+} // namespace permutations_helpers
 
 void keccakf(uint64_t state[25])
 {
@@ -62,7 +72,10 @@ void theta(uint64_t state[25])
 
 void rho(uint64_t state[25])
 {
-
+    for(int i=0 ; i<25 ; i++)
+    {
+        state[i] = bit_management::rotl64(state[i], permutations_helpers::rho_offsets[i]);
+    }
 }
 
 void pi(uint64_t state[25])

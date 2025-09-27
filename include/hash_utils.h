@@ -44,6 +44,7 @@ namespace permutations_helpers {
         return parities;
     };
 
+    extern const uint64_t rho_offsets [25];
 }
 
 } // namespace permutations
