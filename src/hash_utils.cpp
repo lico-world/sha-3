@@ -20,7 +20,7 @@ void store64(uint8_t* bytes, uint64_t lane)
 {
     for(int i=0, k=0 ; i<8 ; i++, k+=8)
     {
-        bytes[i] = (lane >> k) % k;
+        bytes[i] = static_cast<uint8_t>((lane >> k) & 0xFF);
     }
 }
 
