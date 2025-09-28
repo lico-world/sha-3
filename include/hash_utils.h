@@ -2,6 +2,7 @@
 #define HASH_UTILS_H
 
 #include <cstdint>
+#include <algorithm>
 
 namespace hash {
 namespace utils {
@@ -25,6 +26,28 @@ namespace permutations {
     void pi(uint64_t state[25]);
     void chi(uint64_t state[25]);
     void iota(uint64_t state[25], unsigned round);
+
+namespace permutations_helpers {
+
+    inline uint64_t* parities(uint64_t state[25])
+    {
+        static uint64_t parities[5] = {0};
+    
+        for(int j=0 ; j<5 ; j++)
+        {
+            parities[j] = state[0 + j] ^
+                          state[5 + j] ^
+                          state[10+ j] ^
+                          state[15+ j] ^
+                          state[20+ j];
+        }
+
+        return parities;
+    };
+
+    extern const uint64_t rho_offsets [25];
+    extern const uint64_t RC [24];
+}
 
 } // namespace permutations
 
