@@ -46,6 +46,7 @@ namespace permutations_helpers {
     };
 
     extern const uint64_t rho_offsets [25];
+    extern const uint64_t RC [24];
 }
 
 } // namespace permutations
