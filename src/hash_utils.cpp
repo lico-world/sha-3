@@ -94,7 +94,13 @@ void pi(uint64_t state[25])
 
 void chi(uint64_t state[25])
 {
+    uint64_t initial_state[25];
+    std::copy(state, state + 25, initial_state);
 
+    for(int i=0 ; i<25 ; i++)
+    {
+        state[i] = initial_state[i] ^ (~initial_state[((i+1)%5 + (i+1)/5*5)%25] & initial_state[((i+2)%5 + (i+2)/5*5)%25]);
+    }
 }
 
 void iota(uint64_t state[25], unsigned round)
