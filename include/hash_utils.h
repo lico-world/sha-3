@@ -33,13 +33,13 @@ namespace permutations_helpers {
     {
         static uint64_t parities[5] = {0};
     
-        for(int i=0 ; i<5 ; i++)
+        for(int j=0 ; j<5 ; j++)
         {
-            parities[i] = (state[i]      ) ^
-                          (state[i + 5]  ) ^
-                          (state[i + 10] ) ^
-                          (state[i + 15] ) ^
-                          (state[i + 20] );
+            parities[j] = state[0 + j] ^
+                          state[5 + j] ^
+                          state[10+ j] ^
+                          state[15+ j] ^
+                          state[20+ j];
         }
 
         return parities;
