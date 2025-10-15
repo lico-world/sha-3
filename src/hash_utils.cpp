@@ -1,5 +1,7 @@
 #include "../include/hash_utils.h"
 
+#include <iostream>
+
 namespace hash {
 namespace utils {
 namespace bit_management {
@@ -52,6 +54,7 @@ const uint64_t RC[24] = {
 
 } // namespace permutations_helpers
 
+__attribute__((weak)) // Allowing override in tests
 void keccakf(uint64_t state[25])
 {
     // 64bits -> 12 + 2*log2(64) = 24 rounds
