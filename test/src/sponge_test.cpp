@@ -152,3 +152,57 @@ TEST_F(AbsorbTest, MixedFullAndPartialBlocks)
 
     EXPECT_EQ(state[0], expected);
 }
+
+class SqueezeTest : public ::testing::Test
+{
+protected:
+    uint64_t state[25];
+
+    void SetUp() override
+    {
+        for (int i = 0; i < 25; i++)
+            state[i] = i + 1;
+    }
+};
+
+TEST_F(SqueezeTest, SingleRateBlock)
+{
+    uint8_t output[8] = {};
+    hash::utils::sponge::squeeze(state, output, sizeof(output), 64);
+
+    uint64_t outValue = hash::utils::bit_management::load64(output);
+    EXPECT_EQ(outValue, state[0]);
+}
+
+TEST_F(SqueezeTest, TwoLaneRate)
+{
+    uint8_t output[16] = {};
+    hash::utils::sponge::squeeze(state, output, sizeof(output), 128);
+
+    uint64_t lane0 = hash::utils::bit_management::load64(output);
+    uint64_t lane1 = hash::utils::bit_management::load64(output + 8);
+
+    EXPECT_EQ(lane0, state[0]);
+    EXPECT_EQ(lane1, state[1]);
+}
+
+TEST_F(SqueezeTest, LongerThanRateCallsPermutation)
+{
+    uint8_t output[16] = {};
+    hash::utils::sponge::squeeze(state, output, sizeof(output), 8);  // tiny rate forces multiple keccakf calls
+
+    uint64_t firstOut = hash::utils::bit_management::load64(output);
+    uint64_t secondOut = hash::utils::bit_management::load64(output + 8);
+
+    EXPECT_EQ(firstOut, state[0]);
+    EXPECT_EQ(secondOut, state[0] ^ 0xDEADBEEFDEADBEEF);
+}
+
+TEST_F(SqueezeTest, ZeroOutputLength)
+{
+    uint8_t output[1] = {};
+    hash::utils::sponge::squeeze(state, output, 0, 64);
+    
+    for (int i = 0; i < 25; i++)
+        EXPECT_EQ(state[i], i + 1);
+}
