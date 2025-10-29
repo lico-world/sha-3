@@ -2,17 +2,6 @@
 
 #include <gtest/gtest.h>
 
-// Mocks / stubs for determinism
-// namespace bit_management
-// {
-//     static inline uint64_t load64(const uint8_t* x)
-//     {
-//         uint64_t r = 0;
-//         for (int i = 0; i < 8; ++i) r |= (uint64_t)x[i] << (8 * i);
-//         return r;
-//     }
-// }
-
 namespace hash {
 namespace utils {
 namespace permutations {
