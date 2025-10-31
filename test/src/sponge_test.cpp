@@ -189,13 +189,15 @@ TEST_F(SqueezeTest, TwoLaneRate)
 TEST_F(SqueezeTest, LongerThanRateCallsPermutation)
 {
     uint8_t output[16] = {};
-    hash::utils::sponge::squeeze(state, output, sizeof(output), 8);  // tiny rate forces multiple keccakf calls
+    uint64_t originalState = state[0];
+
+    hash::utils::sponge::squeeze(state, output, sizeof(output), 8*8);
 
     uint64_t firstOut = hash::utils::bit_management::load64(output);
     uint64_t secondOut = hash::utils::bit_management::load64(output + 8);
 
-    EXPECT_EQ(firstOut, state[0]);
-    EXPECT_EQ(secondOut, state[0] ^ 0xDEADBEEFDEADBEEF);
+    EXPECT_EQ(firstOut, originalState);
+    EXPECT_EQ(secondOut, originalState ^ 0xDEADBEEFDEADBEEF);
 }
 
 TEST_F(SqueezeTest, ZeroOutputLength)
