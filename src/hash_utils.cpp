@@ -1,5 +1,7 @@
 #include "../include/hash_utils.h"
 
+#include <iostream>
+
 namespace hash {
 namespace utils {
 namespace bit_management {
@@ -52,6 +54,7 @@ const uint64_t RC[24] = {
 
 } // namespace permutations_helpers
 
+__attribute__((weak)) // Allowing override in tests
 void keccakf(uint64_t state[25])
 {
     // 64bits -> 12 + 2*log2(64) = 24 rounds
@@ -128,13 +131,81 @@ void iota(uint64_t state[25], unsigned round)
 namespace sponge {
 
 void absorb(uint64_t state[25], const uint8_t* input, size_t inlen, size_t rate)
-{}
+{
+    size_t blockSize = rate / 8;
+    size_t offset = 0;
+
+    while(inlen >= blockSize)
+    {
+        for(size_t i=0 ; i<blockSize/8 ; i++)
+        {
+            state[i] ^= bit_management::load64(input + offset + 8*i);
+        }
+        permutations::keccakf(state);
+        offset += blockSize;
+        inlen -= blockSize;
+    }
+
+    if(inlen > 0)
+    {
+        absorbLastBlock(state, input + offset, inlen, rate);
+    }
+}
 
 void absorbLastBlock(uint64_t state[25], const uint8_t* last, size_t lastLen, size_t rate)
-{}
+{
+    size_t blockSize = rate / 8;
+    uint8_t temp[blockSize];
+    std::fill(temp, temp + blockSize, 0);
+    std::copy(last, last + lastLen, temp);
+
+    temp[lastLen] = 0x06;
+    temp[blockSize - 1] |= 0x80;
+
+    for(size_t i=0 ; i<blockSize/8 ; i++)
+    {
+        state[i] ^= bit_management::load64(temp + 8*i);
+    }
+    
+    permutations::keccakf(state);
+}
 
 void squeeze(uint64_t state[25], uint8_t* output, size_t outlen, size_t rate)
-{}
+{
+    if (outlen == 0) return;
+
+    size_t blockSize = rate /8;
+    size_t offset = 0;
+
+    while (outlen > 0)
+    {
+        size_t bytesToCopy = std::min(outlen, blockSize);
+
+        size_t fullLanes = bytesToCopy / 8;
+        for (size_t i = 0; i < fullLanes; i++)
+        {
+            bit_management::store64(output + offset + 8*i, state[i]);
+        }
+
+        size_t leftoverBytes = bytesToCopy % 8;
+        if (leftoverBytes > 0)
+        {
+            uint64_t lane = state[fullLanes];
+            for (size_t i = 0; i < leftoverBytes; i++)
+            {
+                output[offset + fullLanes*8 + i] = (lane >> (8*i)) & 0xFF;
+            }
+        }
+
+        offset += bytesToCopy;
+        outlen -= bytesToCopy;
+
+        if (outlen > 0)
+        {
+            permutations::keccakf(state);
+        }
+    }
+}
 
 
 } // namespace sponge

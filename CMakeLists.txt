@@ -23,6 +23,7 @@ add_executable(sha3_tests
     test/src/main.cpp
     test/src/bit_management_test.cpp
     test/src/permutation_test.cpp
+    test/src/sponge_test.cpp
     # Add other test source files here if needed
 )
 
